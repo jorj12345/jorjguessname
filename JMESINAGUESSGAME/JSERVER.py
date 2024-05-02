@@ -3,7 +3,7 @@ import socket
 import random
 import json
 
-# Load leaderboard data from file
+
 def load_leaderboard():
     try:
         with open("leaderboard.json", "r") as f:
@@ -12,12 +12,12 @@ def load_leaderboard():
         leaderboard = {}
     return leaderboard
 
-# Save leaderboard data to file
+
 def save_leaderboard(leaderboard):
     with open("leaderboard.json", "w") as f:
         json.dump(leaderboard, f)
 
-# Generate a random number based on difficulty
+
 def generate_number(difficulty):
     if difficulty == 'Easy':
         return random.randint(1, 50)
@@ -28,7 +28,7 @@ def generate_number(difficulty):
     else:
         return None
 
-# Update leaderboard with new score
+
 def update_leaderboard(leaderboard, name, score):
     if name in leaderboard:
         if score < leaderboard[name]:
@@ -36,7 +36,7 @@ def update_leaderboard(leaderboard, name, score):
     else:
         leaderboard[name] = score
 
-# Handle client connection
+
 def handle_client(conn):
     conn.send("Welcome to the Number Guessing Game!\n".encode())
     name = conn.recv(1024).decode().strip()
@@ -66,21 +66,17 @@ def handle_client(conn):
             else:
                 conn.send("Try lower!\n".encode())
     except (ConnectionResetError, ConnectionAbortedError):
-        # Handle client disconnect
+      
         print("Client disconnected unexpectedly.")
 
-    # Display the correct number
     conn.send(f"The correct number was: {number_to_guess}\n".encode())
     
-    # Update leaderboard
     leaderboard = load_leaderboard()
     update_leaderboard(leaderboard, name, tries)
     save_leaderboard(leaderboard)
 
     conn.close()
 
-
-# Main function
 def main():
     HOST = '192.168.68.115'
     PORT = 7777
